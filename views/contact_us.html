@@ -1,0 +1,63 @@
+<!-- CONTACT US -->
+<div class="diffSection" id="contactus_section">
+    <center>
+        <p style="font-size: 50px; padding: 100px">Contact Us</p>
+    </center>
+    <div class="csec"></div>
+    <div class="back-contact">
+        <div class="cc">
+            <form method="post" enctype="text/plain">
+                <label>First Name <span class="imp">*</span></label><label style="margin-left: 185px">Last Name
+                    <span class="imp">*</span></label><br>
+                <center>
+                    <input id="first_name" name="fname" type="text" style="margin-right: 10px; width: 175px"
+                        required="required"><input type="text" name="lname" id="last_name" style="width: 175px"
+                        required="required"><br>
+                </center>
+                <label>Email <span class="imp">*</span></label><br>
+                <input type="email" id="email" style="width: 100%" required="required"><br>
+                <label>Message <span class="imp">*</span></label><br>
+                <input type="text" id="message" style="width: 100%" required="required"><br>
+                <label>Additional Details</label><br>
+                <textarea id="additional_details"></textarea><br>
+                <button type="submit" id="csubmit" onclick="sendMessage()">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function sendMessage(){
+
+
+var contact_us = {};
+contact_us.first_name = $('#first_name').val();
+contact_us.last_name = $('#last_name').val();
+contact_us.email = $('#email').val();
+contact_us.message = $('#message').val();
+contact_us.additional_details = $('#additional_details').val();
+
+$.ajax({
+    url: 'rest/contact',
+    type: 'POST',
+    data: JSON.stringify(contact_us),
+    contentType: "application/json",
+    dataType: "json",
+    success: function(result) {
+        alert("RADII");
+        /*
+        $('#fname').val("");
+        $('#lname').val("");
+        $('#email').val("");
+        $('#message').val("");
+        $('#additional_details').val("");
+        */
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        toastr.error(jqXHR.responseJSON.message);
+      }
+    });
+}
+
+</script>

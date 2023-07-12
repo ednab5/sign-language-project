@@ -1,0 +1,113 @@
+	
+	<!-- TUTORIALS -->
+	<div class="diffSection" id="tutorials_section">
+		<div class="service-swipe">
+			<div class="diffSection" id="services_section">
+				<center>
+					<p style="font-size: 50px; padding: 100px; padding-bottom: 40px; color: #fff;">Tutorials</p>
+				</center>
+			</div>
+			<div id="tutorials-list" class="justify-content-center">
+
+				<!--OVDJE NAM SE IZLISTAVA-->
+				
+				
+			</div>
+		</div>
+	</div>
+	
+
+		<!-- BEGINNER -->
+		<div class="university-body">
+			<div class="card" style="width: 25rem; margin: auto;">
+				<iframe class="card-img-top" style="width: 100%; height: auto;"
+			src="https://www.youtube.com/embed/cGavOVNDj1s">
+			</iframe>  
+
+			
+		</div>
+		
+
+	   <div class="welcome-section">
+		  <h1>Corner for Beginners</h1>
+			<p>
+				Sign Language activates the visual processing and motor control areas of the hands in the brain.
+				In addition, when Sign Language is used to express spatial relationships, areas of the brain
+				related to spatial processing and body awareness are activated, which is not the case with the
+				use of spoken language.			
+			</p>
+		</div>
+
+
+		</div>
+
+
+
+		<!-- INTERMEDIATE -->
+		<div class="university-body">
+			<div class="card" style="width: 25rem; margin: auto;">
+				<iframe class="card-img-top" style="width: 100%; height: auto;"
+		src="https://www.youtube.com/embed/cGavOVNDj1s">
+		</iframe>  
+		
+		
+	</div>
+	
+
+   <div class="welcome-section">
+	  <h1>Corner for Intermediate Level</h1>
+		<p>
+			Sign Language activates the visual processing and motor control areas of the hands in the brain.
+			In addition, when Sign Language is used to express spatial relationships, areas of the brain
+			related to spatial processing and body awareness are activated, which is not the case with the
+			use of spoken language.			
+		</p>
+	</div>
+
+
+	</div>
+
+		
+	<div class="university-body">
+		<div class="card" style="width: 25rem; margin: auto;">
+		<iframe class="card-img-top" style="width: 100%; height: auto;"
+		src="https://www.youtube.com/embed/cGavOVNDj1s">
+		</iframe>  
+
+		
+	</div>
+	
+
+   <div class="welcome-section">
+	  <h1>Corner for Advanced Level</h1>
+		<p>
+			Sign Language activates the visual processing and motor control areas of the hands in the brain.
+			In addition, when Sign Language is used to express spatial relationships, areas of the brain
+			related to spatial processing and body awareness are activated, which is not the case with the
+			use of spoken language.			
+		</p>
+	</div>
+
+
+	</div>
+
+
+		<script>
+			function tutorials() {
+		$.ajax({
+			url: "rest/levels",
+			type: "get",
+			success: function (data) {
+				console.log(data);
+				var html = "";
+				for (let i = 0; i < data.length; i++) {
+					html += `<a id="` + data[i].id + `" href="` + data[i].lessons_path + `"><div class="s-card"><img src="` + data[i].icon_path + `"><p>` + data[i].level + `</p></div></a>`;
+				}
+				$("#tutorials-list").html(html);
+				// $("#sender_id").html(html); 
+				// `<a href="`+ data[i].id +`"><div class="s-card"><img src="`+data[i].icon_path +`"><p>`+data[i].level +`</p></div></a>`;
+			},
+		});
+	}
+	tutorials();
+		</script>

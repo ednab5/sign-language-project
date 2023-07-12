@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="shortcut icon" type="png" href="images/icon/favicon.png">
+	<title>Login SignUp</title>
+	<link rel="stylesheet" type="text/css" href="css/loginStyle.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	<!-- It will redirect to the Home Page after submitting the form -->
+
+</head>
+
+<body>
+	<div class="form-box">
+		<div class="button-box">
+			<div id="btn"></div>
+			<button type="button" class="toggle-btn" id="log" onclick="login()" style="color: #fff;">Log In</button>
+
+		</div>
+
+
+		<!-- Login Form -->
+		<form id="login" class="input-group">
+			<div class="inp">
+				<img src="images/icon/user.png"><input type="text" id="username" class="input-field" placeholder="Username"
+					style="width: 88%; border:none;" required="required">
+			</div>
+			<div class="inp">
+				<img src="images/icon/password.png"><input type="password" id="password" class="input-field"
+					placeholder="Password" style="width: 88%; border: none;" required="required">
+			</div>
+			<div class="mb-3">
+				<div>
+					<br/>
+				</div>
+			  </div>
+			
+			<button type="button" class="submit-btn" onClick="loginForm()">Log In</button>
+		</form>
+		<div id="info"></div>
+
+
+
+
+		
+	</div>
+	<script type="text/javascript" src="script.js"></script>
+	<script src="javaScript/jquery.min.js"></script>
+	<script src="javaScript/jquery.validate.min.js"></script>
+	<script src="javaScript/jquery-3.6.0.min.js"></script>
+	<script src="javaScript/toastr.min.js"></script>
+	<script src="javaScript\bootstrap.bundle.min.js"></script>
+
+</body>
+<script>
+	function loginForm() {
+	 
+	  var user = {};
+	  user.username = $('#username').val();
+	  user.password = $('#password').val();
+	
+	  $.ajax({
+		type: "POST",
+		url: 'rest/login',
+		data: JSON.stringify(user),
+		contentType: "application/json",
+		dataType: "json",
+		
+  
+		success: function (data) {
+			console.log(data);
+      localStorage.setItem("token",data.token);
+      window.location.replace("admin_panel.html");
+    },
+    error: function(res){
+      console.log(res)
+    }
+  
+	  });
+	}
+
+  </script>
+</html>

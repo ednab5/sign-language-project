@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container">
+      <div class="row">
+          <div class="col-md-6 offset-md-3">
+              <div class="card my-5">
+                  <form class="card-body cardbody-color p-lg-5" >
+                      <div class="mb-3">
+                          <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
+                              placeholder="Lesson name">
+                      </div>
+                      <div class="mb-3">
+                          <select name="level_id" id="level_id">
+                              <option value="1">Prvi nivo</option>
+                              <option value="2">Drugi nivo</option>
+
+                          </select>
+                      </div>
+
+                      <div class="mb-3">
+                          <input type="file" name="lesson_path" id="lesson_path">
+                      </div>
+
+                      <div class="text-center"><button type="button" class="btn btn-color px-5 mb-5 w-100" onClick ="upload()">Upload</button></div>
+                      <div id="info" style="text-align: center;color: red;"></div>
+                      <br>
+
+                  </form>
+              </div>
+
+          </div>
+      </div>
+  </div>
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800" id="manageItems">Manage lessons</h1>
+   </div>
+   <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Image Path</th>
+          <th>Lesson Path</th>
+        </tr>
+      </thead>
+      <tbody id="lessons-list">
+        
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800" id="manageItems">Messages</h1>
+   </div>
+   <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody id="message-list">
+        
+      </tbody>
+    </table>
+  </div>
+
+  <div class="portfolio-modal modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="modal-body" id="editItemModalInfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="javaScript/jquery-3.6.0.min.js"></script>
+<script src="javaScript\bootstrap.bundle.min.js"></script>
+<script src="javaScript/toastr.min.js"></script>
+<script>
+function upload() {
+/*   var up = {};
+  up.name = $('#name').val();
+  up.level_id = $('#level_id').val();
+  up.uploadFileEle = document.getElementById("lesson_path");
+  up.uploadFileEle = up.uploadFileEle.files[0];
+  up.uploadFileEle = up.uploadFileEle['name']; */
+  let formData = new FormData();           
+  formData.append("file", lesson_path.files[0]);
+//console.log(up.uploadFileEle.files[0]);
+//console.log(up.uploadFileEle['name']);
+    $.ajax({
+        type: "POST",
+        url: 'rest/upload',
+        data: formData,
+        contentType: "application/json",
+        dataType: "json",
+
+        success: function (data) {
+          console.log(data);
+
+         
+        }
+    });
+}
+
+function list() {
+    $.ajax({
+            url: `rest/lessons`,
+            type: "GET",
+
+            success: function(data) {
+            $("#lessons-list").html("");
+            console.log(data);
+            var html = "";
+            for (let i = 0; i < data.length; i++) {
+                html += `
+            <tr>
+                <td>${data[i].name}</td>
+                <td>${data[i].image_path}</td>
+                <td>${data[i].lesson_path}</td>
+                <td>
+                <button class="btn btn-primary btn-sm" onclick="editItem(${data[i].id})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteItem(${data[i].id})">Delete</button>
+                </td>
+            </tr>
+            `
+            }
+            $("#lessons-list").html(html);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+            toastr.error(XMLHttpRequest.responseJSON.message);
+            loginService.logout();
+            }
+        });
+}
+
+list();
+
+ function deleteItem(id){
+            $.ajax({
+                url: `rest/lessons/` + id,
+                type: `DELETE`,
+                success: function(result) {
+                    list();
+                    console.log(result);
+                    alert("You deleted successfully");
+                  },
+                  error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    toastr.error(XMLHttpRequest.responseJSON.message);
+                  }
+            });
+        }
+
+
+        function editItem(id){
+            $('#editItemModalInfo').html('loading...');
+
+            $.ajax({
+                url: `rest/lessons/` + id,
+                type: `GET`,
+                success: function(data) {
+                    console.log("OVO JE DATAAAA: ", data[0].name);
+                    
+                    $("#editItemModalInfo").html("");
+                    var html = "";
+                    html += `
+                    
+                    <ul class="list-inline">
+                        <li><strong>Name:</strong> <input id="nameInput" type="text" value="${data[0].name}"></li>
+                        <li><strong>Image Path:</strong> <input id="imageImput_path" type="text" value="${data[0].image_path}"></li>
+                        <li><strong>Lesson Path:</strong> <input id="lessonInput_path" type="text" value="${data[0].lesson_path}"></li>
+                        <li>
+                        
+                    </li>                    <button class="btn-primary-modal btn-l text-uppercase me-4" data-bs-dismiss="modal" type="button">
+                        <i class="fas fa-xmark me-1"></i>
+                        Close Project
+                    </button>
+                    <button class="btn-success-modal btn-l text-uppercase save-edit-button" type="button" onclick="update('${data[0].id}')">Save</button>
+                    `;
+                
+                    $("#editItemModalInfo").html(html);
+                    $("#editItemModal").modal("show");                    
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    toastr.error(XMLHttpRequest.responseJSON.message);
+                  }
+            });
+        }
+
+        function update(id){
+                console.log(id);
+                
+                var lesson = {};
+                lesson.name = $('#nameInput').val();
+                lesson.image_path = $('#imageImput_path').val();
+                lesson.lesson_path = $('#lessonInput_path').val();
+                
+                console.log("KESS, ", lesson.lesson_path);
+                $.ajax({
+                  url: 'rest/lessons/'+ id,
+                  type: 'PUT',
+                  data: JSON.stringify(lesson),
+                  contentType: "application/json",
+                  dataType: "json",
+                  success: function(result) {
+                    console.log("RADI");
+                    
+                    $("#editItemModal").modal("hide");
+                    list(); // perf optimization
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error(jqXHR.responseJSON.message);
+                  },
+                });
+              }
+
+
+              function list_messages() {
+    $.ajax({
+            url: `rest/contact_us`,
+            type: "GET",
+
+            success: function(data) {
+            $("#message-list").html("");
+            console.log(data);
+            var html = "";
+            for (let i = 0; i < data.length; i++) {
+                html += `
+            <tr>
+                <td>${data[i].first_name}</td>
+                <td>${data[i].last_name}</td>
+                <td>${data[i].message}</td>
+            
+           
+            </tr>
+            `
+            }
+            $("#message-list").html(html);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+            toastr.error(XMLHttpRequest.responseJSON.message);
+            loginService.logout();
+            }
+        });
+}
+
+list_messages();
+
+
+</script>
+<!--
+
+<td>
+    <button class="btn btn-primary btn-sm" onclick="editItem(${data[i].id})">Edit</button>
+    <button class="btn btn-danger btn-sm" onclick="deleteItem(${data[i].id})">Delete</button>
+    </td>
+
+-->
+</html>
